@@ -1,0 +1,50 @@
+#!/bin/zsh
+OLD_PS1=$PS1
+PS1="%F{green}%B(devenv)%f %1~ %F{magenta}$%f%b "
+LIB="-lncurses"
+
+build () {
+    gcc src/main.c -o dante $LIB
+}
+
+run () {
+    build && ./dante
+}
+
+clean () {
+    rm -fr dante
+}
+
+envexit () {
+    PS1=$OLD_PS1
+    unset OLD_PS1
+    unset LIB
+    unset -f envexit
+    unset -f envreset
+    unset -f build
+    unset -f run
+    unset -f clean
+    unset -f install
+    unset -f uninstall
+}
+
+envreset () {
+    envexit
+    source devenv
+}
+
+install () {
+}
+
+uninstall () {
+}
+
+if [[ $# -eq 1 ]]; then
+    if [[ $1 -eq "install" ]]; then
+        install
+    elif [[ $1 -eq "uninstall" ]]; then
+        uninstall
+    elif [[ $1 -eq "build" ]]; then
+        build
+    fi
+fi
